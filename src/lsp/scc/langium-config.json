@@ -1,0 +1,17 @@
+{
+  "projectName": "Scc",
+  "languages": [
+    {
+      "id": "scc",
+      "grammar": "language/scc.langium",
+      "fileExtensions": [".sc"],
+      "textMate": {
+        "out": "syntaxes/scc.tmLanguage.json"
+      },
+      "monarch": {
+        "out": "syntaxes/scc.monarch.ts"
+      }
+    }
+  ],
+  "out": "language/generated"
+}

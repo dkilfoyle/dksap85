@@ -19,8 +19,9 @@ export const disableElement = (id: string, disabled: boolean) => {
 export const defineDefaultWorkerLoaders: () => Record<string, WorkerLoader> = () => {
   return {
     // if you import monaco api as 'monaco-editor': monaco-editor/esm/vs/editor/editor.worker.js
-    TextEditorWorker: () =>
-      new Worker(new URL("@codingame/monaco-vscode-editor-api/esm/vs/editor/editor.worker.js", import.meta.url), { type: "module" }),
+    // TextEditorWorker: () =>
+    //   new Worker(new URL("@codingame/monaco-vscode-editor-api/esm/vs/editor/editor.worker.js", import.meta.url), { type: "module" }),
+    TextEditorWorker: () => new Worker(new URL("monaco-editor/esm/vs/editor/editor.worker.js", import.meta.url), { type: "module" }),
     TextMateWorker: () => new Worker(new URL("@codingame/monaco-vscode-textmate-service-override/worker", import.meta.url), { type: "module" }),
     // these are other possible workers not configured by default
     OutputLinkDetectionWorker: undefined,

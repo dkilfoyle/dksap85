@@ -25,19 +25,23 @@ import getPreferencesServiceOverride from "@codingame/monaco-vscode-preferences-
 import getMarkersServiceOverride from "@codingame/monaco-vscode-markers-service-override";
 import getOutlineServiceOverride from "@codingame/monaco-vscode-outline-service-override";
 import getDebugServiceOverride from "@codingame/monaco-vscode-debug-service-override";
+// requried for syntax hihlighting
+import getLanguagesServiceOverride from "@codingame/monaco-vscode-languages-service-override";
+import getThemeServiceOverride from "@codingame/monaco-vscode-theme-service-override";
+import getTextMateServiceOverride from "@codingame/monaco-vscode-textmate-service-override";
 
 // this is required syntax highlighting
-import "@codingame/monaco-vscode-typescript-basics-default-extension";
-import "@codingame/monaco-vscode-typescript-language-features-default-extension";
-import "@codingame/monaco-vscode-search-result-default-extension";
+// import "@codingame/monaco-vscode-typescript-basics-default-extension";
+// import "@codingame/monaco-vscode-typescript-language-features-default-extension";
+// import "@codingame/monaco-vscode-search-result-default-extension";
 
 import { createDefaultLocaleConfiguration } from "monaco-languageclient/vscode/services";
 import { configureMonacoWorkers, createDefaultWorkspaceFile } from "./utils.js";
 // import helloTsCode from "../../resources/appPlayground/hello.ts?raw";
 // import testerTsCode from "../../resources/appPlayground/tester.ts?raw";
 import type { MonacoEditorLanguageClientWrapper, WrapperConfig } from "monaco-editor-wrapper";
-// import { defaultHtmlAugmentationInstructions, defaultViewsInit } from "monaco-editor-wrapper/vscode/services";
 import { RegisterLocalProcessExtensionResult } from "@codingame/monaco-vscode-api/extensions";
+import { getSccLanguageClientConfig, getSccLanguageExtension } from "./lsp/scc/scc-setup.js";
 
 export type ConfigResult = {
   wrapperConfig: WrapperConfig;
@@ -74,12 +78,13 @@ export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
         ...getMarkersServiceOverride(),
         ...getPreferencesServiceOverride(),
         ...getDebugServiceOverride(),
+        ...getOutputServiceOverride(),
+        ...getLanguagesServiceOverride(),
+        ...getTextMateServiceOverride(),
+        ...getThemeServiceOverride(),
       },
       enableExtHostWorker: true,
       viewsConfig: {
-        // viewServiceType: "ViewsService",
-        // htmlAugmentationInstructions: defaultHtmlAugmentationInstructions,
-        // viewsInitFunc: defaultViewsInit,
         viewServiceType: "WorkspaceService",
       },
       workspaceConfig: {
@@ -119,27 +124,19 @@ export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
         }),
       },
     },
-    extensions: [
-      {
-        config: {
-          name: "mlc-app-playground",
-          publisher: "TypeFox",
-          version: "1.0.0",
-          engines: {
-            vscode: "*",
-          },
-        },
-      },
-    ],
+    languageClientConfigs: {
+      scc: getSccLanguageClientConfig(),
+    },
+    extensions: [getSccLanguageExtension()],
     editorAppConfig: {
       monacoWorkerFactory: configureMonacoWorkers,
     },
   };
 
-  const helloTsUri = vscode.Uri.file("/workspace/hello.ts");
-  const testerTsUri = vscode.Uri.file("/workspace/tester.ts");
+  const helloTsUri = vscode.Uri.file("/workspace/hello.sc");
+  const testerTsUri = vscode.Uri.file("/workspace/tester.sc");
   const fileSystemProvider = new RegisteredFileSystemProvider(false);
-  fileSystemProvider.registerFile(new RegisteredMemoryFile(helloTsUri, "console.log(123)"));
+  fileSystemProvider.registerFile(new RegisteredMemoryFile(helloTsUri, "main() {int i; i=5}"));
   fileSystemProvider.registerFile(new RegisteredMemoryFile(testerTsUri, "// bla"));
   fileSystemProvider.registerFile(createDefaultWorkspaceFile(workspaceFile, "/workspace"));
   registerFileSystemOverlay(1, fileSystemProvider);
@@ -153,7 +150,7 @@ export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
 };
 
 export const configurePostStart = async (wrapper: MonacoEditorLanguageClientWrapper, configResult: ConfigResult) => {
-  const result = wrapper.getExtensionRegisterResult("mlc-app-playground") as RegisterLocalProcessExtensionResult;
+  const result = wrapper.getExtensionRegisterResult("scc-language-extension") as RegisterLocalProcessExtensionResult;
   result.setAsDefaultApi();
 
   // WA: Force show explorer and not search
