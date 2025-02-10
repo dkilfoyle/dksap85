@@ -1,30 +1,28 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import { MonacoEditorLanguageClientWrapper, type TextChanges } from "monaco-editor-wrapper";
+import { MonacoEditorReactComp } from "@typefox/monaco-editor-react";
+import { configure, configurePostStart } from "./config";
+
+const configResult = configure();
 
 function App() {
-  const [count, setCount] = useState(0);
+  const onTextChanged = (textChanges: TextChanges) => {
+    console.log(`Dirty? ${textChanges.isDirty}\ntext: ${textChanges.modified}\ntextOriginal: ${textChanges.original}`);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+    <div style={{ backgroundColor: "#1f1f1f" }}>
+      <MonacoEditorReactComp
+        wrapperConfig={configResult.wrapperConfig}
+        onTextChanged={onTextChanged}
+        onLoad={async (wrapper: MonacoEditorLanguageClientWrapper) => {
+          await configurePostStart(wrapper, configResult);
+        }}
+        onError={(e) => {
+          console.error(e);
+        }}
+      />
+    </div>
   );
 }
 

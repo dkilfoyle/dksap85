@@ -1,8 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import importMetaUrlPlugin from "@codingame/esbuild-import-meta-url-plugin";
-import * as fs from "fs";
-import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -27,28 +25,6 @@ export default defineConfig({
           res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
           next();
         });
-      },
-    },
-    {
-      name: "force-prevent-transform-assets",
-      apply: "serve",
-      configureServer(server) {
-        return () => {
-          server.middlewares.use(async (req, res, next) => {
-            if (req.originalUrl != null) {
-              const pathname = new URL(req.originalUrl, import.meta.url.slice(3)).pathname;
-              if (pathname.endsWith(".html")) {
-                res.setHeader("Content-Type", "text/html");
-                res.writeHead(200);
-                console.log(__dirname, pathname);
-                res.write(fs.readFileSync(path.join(__dirname, pathname)));
-                res.end();
-              }
-            }
-
-            next();
-          });
-        };
       },
     },
   ],
