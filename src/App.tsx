@@ -21,6 +21,7 @@ function App() {
         onError={(e) => {
           console.error(e);
         }}
+        style={{ height: "100vh" }}
       />
     </div>
   );

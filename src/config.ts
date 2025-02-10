@@ -19,6 +19,12 @@ import getEnvironmentServiceOverride from "@codingame/monaco-vscode-environment-
 import getSecretStorageServiceOverride from "@codingame/monaco-vscode-secret-storage-service-override";
 import getStorageServiceOverride from "@codingame/monaco-vscode-storage-service-override";
 import getSearchServiceOverride from "@codingame/monaco-vscode-search-service-override";
+import getWorkbenchServiceOverride from "@codingame/monaco-vscode-workbench-service-override";
+import getOutputServiceOverride from "@codingame/monaco-vscode-output-service-override";
+import getPreferencesServiceOverride from "@codingame/monaco-vscode-preferences-service-override";
+import getMarkersServiceOverride from "@codingame/monaco-vscode-markers-service-override";
+import getOutlineServiceOverride from "@codingame/monaco-vscode-outline-service-override";
+import getDebugServiceOverride from "@codingame/monaco-vscode-debug-service-override";
 
 // this is required syntax highlighting
 import "@codingame/monaco-vscode-typescript-basics-default-extension";
@@ -30,7 +36,7 @@ import { configureMonacoWorkers, createDefaultWorkspaceFile } from "./utils.js";
 // import helloTsCode from "../../resources/appPlayground/hello.ts?raw";
 // import testerTsCode from "../../resources/appPlayground/tester.ts?raw";
 import type { MonacoEditorLanguageClientWrapper, WrapperConfig } from "monaco-editor-wrapper";
-import { defaultHtmlAugmentationInstructions, defaultViewsInit } from "monaco-editor-wrapper/vscode/services";
+// import { defaultHtmlAugmentationInstructions, defaultViewsInit } from "monaco-editor-wrapper/vscode/services";
 import { RegisterLocalProcessExtensionResult } from "@codingame/monaco-vscode-api/extensions";
 
 export type ConfigResult = {
@@ -63,12 +69,18 @@ export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
         ...getSecretStorageServiceOverride(),
         ...getStorageServiceOverride(),
         ...getSearchServiceOverride(),
+        ...getWorkbenchServiceOverride(),
+        ...getOutlineServiceOverride(),
+        ...getMarkersServiceOverride(),
+        ...getPreferencesServiceOverride(),
+        ...getDebugServiceOverride(),
       },
       enableExtHostWorker: true,
       viewsConfig: {
-        viewServiceType: "ViewsService",
-        htmlAugmentationInstructions: defaultHtmlAugmentationInstructions,
-        viewsInitFunc: defaultViewsInit,
+        // viewServiceType: "ViewsService",
+        // htmlAugmentationInstructions: defaultHtmlAugmentationInstructions,
+        // viewsInitFunc: defaultViewsInit,
+        viewServiceType: "WorkspaceService",
       },
       workspaceConfig: {
         enableWorkspaceTrust: true,
