@@ -42,12 +42,14 @@ import { configureMonacoWorkers, createDefaultWorkspaceFile } from "./utils.js";
 import type { MonacoEditorLanguageClientWrapper, WrapperConfig } from "monaco-editor-wrapper";
 import { RegisterLocalProcessExtensionResult } from "@codingame/monaco-vscode-api/extensions";
 import { getSccLanguageClientConfig, getSccLanguageExtension } from "./lsp/scc/scc-setup.js";
+import { getAsmLanguageClientConfig, getAsmLanguageExtension } from "./lsp/asm/asm-setup.js";
+
+export const HOME_DIR = "";
+export const WORKSPACE_PATH = `${HOME_DIR}/dk8085`;
 
 export type ConfigResult = {
   wrapperConfig: WrapperConfig;
   workspaceFile: vscode.Uri;
-  helloTsUri: vscode.Uri;
-  testerTsUri: vscode.Uri;
 };
 
 export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
@@ -126,26 +128,41 @@ export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
     },
     languageClientConfigs: {
       scc: getSccLanguageClientConfig(),
+      asm: getAsmLanguageClientConfig(),
     },
-    extensions: [getSccLanguageExtension()],
+    extensions: [getSccLanguageExtension(), getAsmLanguageExtension()],
     editorAppConfig: {
       monacoWorkerFactory: configureMonacoWorkers,
     },
   };
 
-  const helloTsUri = vscode.Uri.file("/workspace/hello.sc");
-  const testerTsUri = vscode.Uri.file("/workspace/tester.sc");
+  // const helloTsUri = vscode.Uri.file("/workspace/hello.sc");
+  // const testerTsUri = vscode.Uri.file("/workspace/tester.asm");
+  // const fileSystemProvider = new RegisteredFileSystemProvider(false);
+  // fileSystemProvider.registerFile(new RegisteredMemoryFile(helloTsUri, "main() {int i; i=5}"));
+  // fileSystemProvider.registerFile(new RegisteredMemoryFile(testerTsUri, "; bla"));
+  // fileSystemProvider.registerFile(createDefaultWorkspaceFile(workspaceFile, "/workspace"));
+  // registerFileSystemOverlay(1, fileSystemProvider);
+
   const fileSystemProvider = new RegisteredFileSystemProvider(false);
-  fileSystemProvider.registerFile(new RegisteredMemoryFile(helloTsUri, "main() {int i; i=5}"));
-  fileSystemProvider.registerFile(new RegisteredMemoryFile(testerTsUri, "// bla"));
-  fileSystemProvider.registerFile(createDefaultWorkspaceFile(workspaceFile, "/workspace"));
+  // const workspaceFileUri = vscode.Uri.file(`${WORKSPACE_PATH}/.vscode/workspace.code-workspace`);
+  fileSystemProvider.registerFile(createDefaultWorkspaceFile(workspaceFile, "/dk8085"));
+
+  const examplesAsm = import.meta.glob("./examples/*.asm", { eager: true, as: "raw" });
+  Object.entries(examplesAsm).forEach(([key, value]) => {
+    fileSystemProvider.registerFile(new RegisteredMemoryFile(vscode.Uri.file(`dk8085/${key.replace("./examples/", "")}`), value));
+  });
+
+  const examplesC = import.meta.glob("./examples/*.c", { eager: true, as: "raw" });
+  Object.entries(examplesC).forEach(([key, value]) => {
+    fileSystemProvider.registerFile(new RegisteredMemoryFile(vscode.Uri.file(`dk8085/${key.replace("./examples/", "")}`), value));
+  });
+
   registerFileSystemOverlay(1, fileSystemProvider);
 
   return {
     wrapperConfig,
     workspaceFile,
-    helloTsUri,
-    testerTsUri,
   };
 };
 
@@ -156,12 +173,12 @@ export const configurePostStart = async (wrapper: MonacoEditorLanguageClientWrap
   // WA: Force show explorer and not search
   // await vscode.commands.executeCommand('workbench.view.explorer');
 
-  await Promise.all([
-    await vscode.workspace.openTextDocument(configResult.helloTsUri),
-    await vscode.workspace.openTextDocument(configResult.testerTsUri),
-  ]);
+  // await Promise.all([
+  //   await vscode.workspace.openTextDocument(configResult.helloTsUri),
+  //   await vscode.workspace.openTextDocument(configResult.testerTsUri),
+  // ]);
 
-  await Promise.all([await vscode.window.showTextDocument(configResult.helloTsUri)]);
+  // await Promise.all([await vscode.window.showTextDocument(configResult.helloTsUri)]);
 
   console.log("Application Playground started");
 };

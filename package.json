@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "langium:generate": "langium generate -f src/lsp/scc/langium-config.json"
+    "langium:scc": "langium generate -f src/lsp/scc/langium-config.json",
+    "langium:asm": "langium generate -f src/lsp/asm/langium-config.json"
   },
   "dependencies": {
     "@codingame/esbuild-import-meta-url-plugin": "~1.0.2",
