@@ -41,8 +41,8 @@ import { configureMonacoWorkers, createDefaultWorkspaceFile } from "./utils.js";
 // import testerTsCode from "../../resources/appPlayground/tester.ts?raw";
 import type { MonacoEditorLanguageClientWrapper, WrapperConfig } from "monaco-editor-wrapper";
 import { RegisterLocalProcessExtensionResult } from "@codingame/monaco-vscode-api/extensions";
-import { getSccLanguageClientConfig, getSccLanguageExtension } from "./lsp/scc/scc-setup.js";
-import { getAsmLanguageClientConfig, getAsmLanguageExtension } from "./lsp/asm/asm-setup.js";
+import { getScLanguageClientConfig, getScLanguageExtension } from "sc-lang";
+import { getAsmLanguageClientConfig, getAsmLanguageExtension } from "asm-lang";
 
 export const HOME_DIR = "";
 export const WORKSPACE_PATH = `${HOME_DIR}/dk8085`;
@@ -127,10 +127,10 @@ export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
       },
     },
     languageClientConfigs: {
-      scc: getSccLanguageClientConfig(),
+      scc: getScLanguageClientConfig(),
       asm: getAsmLanguageClientConfig(),
     },
-    extensions: [getSccLanguageExtension(), getAsmLanguageExtension()],
+    extensions: [getScLanguageExtension(), getAsmLanguageExtension()],
     editorAppConfig: {
       monacoWorkerFactory: configureMonacoWorkers,
     },
@@ -167,7 +167,7 @@ export const configure = (htmlContainer?: HTMLElement): ConfigResult => {
 };
 
 export const configurePostStart = async (wrapper: MonacoEditorLanguageClientWrapper, configResult: ConfigResult) => {
-  const result = wrapper.getExtensionRegisterResult("scc-language-extension") as RegisterLocalProcessExtensionResult;
+  const result = wrapper.getExtensionRegisterResult("sc-language-extension") as RegisterLocalProcessExtensionResult;
   result.setAsDefaultApi();
 
   // WA: Force show explorer and not search

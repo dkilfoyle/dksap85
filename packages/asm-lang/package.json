@@ -1,0 +1,34 @@
+{
+  "name": "asm-lang",
+  "displayName": "SAP4 Assembly Language Server",
+  "description": "Extensible language server for SAP4",
+  "version": "0.0.1",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "main": "./lib/index.js",
+  "scripts": {
+    "compile:src": "tsc --build tsconfig.json",
+    "clean": "npx shx rm -fr lib *.tsbuildinfo",
+    "build": "npm run clean && npm run langium:generate && npm run compile:src",
+    "watch": "tsc -b tsconfig.json --watch",
+    "lint": "eslint src --ext ts",
+    "langium:generate": "langium generate",
+    "langium:watch": "langium generate --watch"
+  },
+  "dependencies": {
+    "langium": "^3.3.1"
+  },
+  "devDependencies": {
+    "langium-cli": "^3.3.0"
+  }
+}

@@ -48,6 +48,8 @@
     "@codingame/monaco-vscode-views-service-override": "~13.1.6",
     "@codingame/monaco-vscode-workbench-service-override": "~13.1.6",
     "@typefox/monaco-editor-react": "~6.2.5",
+    "@vscode/debugadapter": "^1.68.0",
+    "@vscode/debugprotocol": "^1.68.0",
     "langium": "~3.3.1",
     "monaco-editor-wrapper": "~6.2.5",
     "monaco-languageclient": "~9.2.5",
@@ -74,5 +76,8 @@
     "typescript-eslint": "^8.22.0",
     "vite": "^6.1.0",
     "vscode-languageserver-types": "~3.17.5"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/config/config.ts","./src/language/main-browser.ts","./src/language/sc-module.ts","./src/language/sc-validator.ts","./src/language/generated/ast.ts","./src/language/generated/grammar.ts","./src/language/generated/module.ts"],"version":"5.7.3"}

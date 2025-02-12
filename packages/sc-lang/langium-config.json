@@ -1,0 +1,14 @@
+{
+  "projectName": "Sc",
+  "languages": [
+    {
+      "id": "sc",
+      "grammar": "src/language/sc.langium",
+      "fileExtensions": [".c"],
+      "textMate": {
+        "out": "src/config/sc.tmLanguage.json"
+      }
+    }
+  ],
+  "out": "src/language/generated"
+}
